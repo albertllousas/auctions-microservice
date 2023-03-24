@@ -5,7 +5,7 @@ Keywords: `Tactical DDD`, `microservice`, `kotlin`, `spring-boot`, `Hexagonal-Ar
 
 ## Problem
 
-Design and implement an online auction system that allow buyers to participate on auctions through digital means, 
+Design and implement an online auction system that allows buyers to participate on auctions through digital means, 
 rather than being at a physical location.
 
 ## Functional requirements
