@@ -1,8 +1,12 @@
 package auction.infrastructure.`in`.http
 
+import auction.domain.model.AuctionHasFinished
 import auction.domain.model.AuctionNotFound
 import auction.domain.model.AuctionIsNotOpened
+import auction.domain.model.AutoBidAlreadyExists
+import auction.domain.model.AutoBidLimitReached
 import auction.domain.model.CreateAuctionUseCaseError
+import auction.domain.model.CreateAutoBidUseCaseError
 import auction.domain.model.InvalidOpeningDate
 import auction.domain.model.HighestBidHasChanged
 import auction.domain.model.ItemDoesNotBelongToTheSeller
@@ -32,6 +36,15 @@ fun <T> PlaceBidUseCaseError.asHttpError(): ResponseEntity<T> = when (this) {
     HighestBidHasChanged -> conflict("Highest bid has changed")
     UserNotFound -> notFound("User not found")
     AuctionIsNotOpened -> unprocessableEntity("Auction not open for bidding")
+} as ResponseEntity<T>
+
+fun <T> CreateAutoBidUseCaseError.asHttpError(): ResponseEntity<T> = when (this) {
+    AuctionNotFound -> notFound("Auction not found")
+    TooLowAmount -> unprocessableEntity("Too low amount")
+    UserNotFound -> notFound("User not found")
+    AuctionHasFinished -> unprocessableEntity("Auction has finished")
+    AutoBidAlreadyExists -> conflict("Auto bid already exists")
+    AutoBidLimitReached -> unprocessableEntity("Auto bid limit reached")
 } as ResponseEntity<T>
 
 private fun unprocessableEntity(msg: String) = ResponseEntity(HttpError(msg), UNPROCESSABLE_ENTITY)

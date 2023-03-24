@@ -1,5 +1,8 @@
 # Auction System
 
+Keywords: `Tactical DDD`, `microservice`, `kotlin`, `spring-boot`, `Hexagonal-Architecture`, `SOLID`, `Domain-Driven Design`, `functional-programming`,
+`Testing`, `Event-Driven Architecture`, `Domain-Events`, `Kafka`, `MongoDB`, `Transactional-outbox`, `optimistic-locking`
+
 ## Problem
 
 Design and implement an online auction system that allow buyers to participate on auctions through digital means, 
@@ -17,7 +20,6 @@ rather than being at a physical location.
 - Bidders can bid on any existing item any number of times.
 - Bids are only allowed during opening time.
 - The platform would allow auto-bidding up to a limit, increasing automatically your bid every time someone outbids you.
-- Bidders can subscribe to an auction in order to be notified of any change. 
 
 ## Scope
 
@@ -25,7 +27,6 @@ The scope of the system should be auctions, we will work with the assumption tha
 
 - Catalog
 - User lifecycle
-- Notifications
 - ...
 
 Design only the Backend part, let's skip all the FE side.
@@ -40,4 +41,3 @@ Design only the Backend part, let's skip all the FE side.
 
 - 10M auctions added every day
 - 100M requests to bid on these items
-

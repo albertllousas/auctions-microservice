@@ -28,23 +28,23 @@ import java.util.UUID
 private val upserting = FindOneAndReplaceOptions().upsert(true)
 
 class AuctionsMongoRepository(
-    private val auctions: MongoCollection<AuctionDBDto>,
+    private val mongoCollection: MongoCollection<AuctionDBDto>,
     private val sessionHolder: MongoSessionHolder,
 ) {
 
     init {
-        auctions.createIndex(BasicDBObject("itemId", 1), IndexOptions().unique(true))
+        mongoCollection.createIndex(BasicDBObject("itemId", 1), IndexOptions().unique(true))
     }
 
     val save: SaveAuction = { auction ->
         Auction.increaseVersion(auction)
             .let(AuctionDBDto::from)
-            .let { auctions.findOneAndReplace(sessionHolder.get(), AuctionDBDto::id eq it.id, it, upserting) }
+            .let { mongoCollection.findOneAndReplace(sessionHolder.get(), AuctionDBDto::id eq it.id, it, upserting) }
             .also { replacedAuction -> checkConcurrentAccess(replacedAuction, auction) }
     }
 
     val find: FindAuction = { auction ->
-        auctions.findOne(sessionHolder.get(), AuctionDBDto::id eq auction.value.toString())
+        mongoCollection.findOne(sessionHolder.get(), AuctionDBDto::id eq auction.value.toString())
             .let { dto -> Option.fromNullable(dto) }
             .map { dto -> AuctionDBDto.to(dto) }
             .toEither(ifEmpty = { AuctionNotFound })

@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     val verKotlin = "1.4.31"
-    val verSpring = "2.5.14"
+    val verSpring = "3.0.5"
     val verSpringManagement = "1.0.11.RELEASE"
 
     id("org.jetbrains.kotlin.jvm") version "1.6.21"
@@ -12,21 +12,21 @@ plugins {
 }
 
 object Versions {
-    const val JUNIT = "5.9.1"
-    const val MOCKK = "1.13.3"
+    const val JUNIT = "5.9.2"
+    const val MOCKK = "1.13.4"
     const val SPRING_MOCKK = "3.0.1"
-    const val REST_ASSURED = "4.2.0"
-    const val ASSERTJ = "3.23.1"
+    const val REST_ASSURED = "5.3.0"
+    const val ASSERTJ = "3.24.2"
     const val ARROW = "1.1.3"
     const val FAKER = "1.0.2"
     const val KOTEST_ASSERTIONS = "5.5.4"
-    const val MICROMETER = "1.10.2"
+    const val MICROMETER = "1.10.5"
     const val OKHTTP = "4.10.0"
     const val JACKSON = "2.14.1"
-    const val WIREMOCK = "2.27.2"
+    const val WIREMOCK = "3.0.0-beta-4"
     const val KMONGO = "4.8.0"
-    const val TESTCONTAINERS = "1.15.1"
-    const val SPRING_KAFKA = "3.0.0"
+    const val TESTCONTAINERS = "1.17.6"
+    const val SPRING_KAFKA = "3.0.5"
 }
 
 repositories {
@@ -69,7 +69,6 @@ dependencies {
     testImplementation(group =  "org.testcontainers", name = "testcontainers", version = Versions.TESTCONTAINERS)
     testImplementation(group =  "org.testcontainers", name = "mongodb", version = Versions.TESTCONTAINERS)
     testImplementation(group =  "org.testcontainers", name = "kafka", version = Versions.TESTCONTAINERS)
-    testImplementation(group = "io.rest-assured", name = "rest-assured-all", version = Versions.REST_ASSURED)
     testImplementation(group = "io.rest-assured", name = "rest-assured", version = Versions.REST_ASSURED)
 }
 
@@ -82,7 +81,7 @@ tasks.apply {
 
     withType<KotlinCompile> {
         kotlinOptions {
-            jvmTarget = "11"
+            jvmTarget = "17"
             freeCompilerArgs = listOf("-Xjsr305=strict", "-Xinline-classes")
         }
     }

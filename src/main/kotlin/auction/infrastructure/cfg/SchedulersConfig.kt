@@ -7,7 +7,7 @@ import auction.infrastructure.`in`.schedule.TriggerAuctionTasksScheduler
 import auction.infrastructure.out.db.AuctionTasksMongoRepository
 import auction.infrastructure.out.db.OutboxMongoRepository
 import auction.infrastructure.out.schedule.PollOutboxForPublishing
-import auction.infrastructure.out.stream.PublishOutboxMessageToKafka
+import auction.infrastructure.out.messaging.PublishOutboxMessageToKafka
 import io.micrometer.core.instrument.MeterRegistry
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

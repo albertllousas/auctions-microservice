@@ -9,7 +9,7 @@ import auction.infrastructure.out.events.NotifyInMemoryEventHandlers
 import auction.infrastructure.out.events.PublishMetrics
 import auction.infrastructure.out.events.MonitorErrors
 import auction.infrastructure.out.events.ScheduleAuctionTask
-import auction.infrastructure.out.events.StoreOutboxMessage
+import auction.infrastructure.out.events.PublishAuctionChanges
 import auction.infrastructure.out.events.WriteLogs
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.micrometer.core.instrument.MeterRegistry
@@ -39,7 +39,7 @@ class EventsConfig {
         clock: Clock,
         defaultObjectMapper: ObjectMapper
     ): HandleEvent =
-        StoreOutboxMessage(
+        PublishAuctionChanges(
             isAnActiveTransaction::invoke,
             auctionsStream,
             outboxMongoRepository,

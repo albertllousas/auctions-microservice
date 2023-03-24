@@ -7,6 +7,12 @@ typealias FindAuction = (auctionId: AuctionId) -> Either<AuctionNotFound, Auctio
 
 typealias SaveAuction = (auction: Auction) -> Unit
 
+typealias FindAutoBid = (autoBidId: AutoBidId) -> Either<AutoBidNotFound, AutoBid>
+
+typealias FindAutoBidsByAuction = (auctionId: AuctionId) -> List<AutoBid>
+
+typealias SaveAutoBid = (autoBid: AutoBid) -> Unit
+
 typealias FindUser = (UserId) -> Either<UserNotFound, User>
 
 typealias FindItem = (ItemId) -> Either<ItemNotFound, Item>

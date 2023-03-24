@@ -1,17 +1,22 @@
 package auction.infrastructure.cfg
 
 import auction.application.service.CreateAuctionService
+import auction.application.service.CreateAutoBidService
+import auction.application.service.DisableAutoBidService
 import auction.application.service.EndAuctionService
 import auction.application.service.OpenAuctionService
+import auction.application.service.PlaceAutoBidService
 import auction.application.service.PlaceBidService
 import auction.application.service.UseCaseExecutionBuilder
 import auction.domain.model.FindAuction
+import auction.domain.model.FindAutoBid
 import auction.domain.model.FindItem
 import auction.domain.model.FindUser
 import auction.domain.model.PublishEvent
 import auction.domain.model.ReportCrash
 import auction.domain.model.ReportError
 import auction.domain.model.SaveAuction
+import auction.domain.model.SaveAutoBid
 import auction.domain.model.WithinTransaction
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -85,5 +90,36 @@ class AppServicesConfig {
         clock: Clock,
     ) = EndAuctionService(
         findAuction, saveAuction, useCaseExecutionBuilder.build(EndAuctionService::class), clock
+    )
+
+    @Bean
+    fun createAutoBidService(
+        findAuction: FindAuction,
+        findUser: FindUser,
+        saveAutoBid: SaveAutoBid,
+        useCaseExecutionBuilder: UseCaseExecutionBuilder,
+    ) = CreateAutoBidService(
+        findAuction, findUser, saveAutoBid, useCaseExecutionBuilder.build(CreateAutoBidService::class)
+    )
+
+    @Bean
+    fun placeAutoBidService(
+        findAuction: FindAuction,
+        findAutoBid: FindAutoBid,
+        saveAuction: SaveAuction,
+        clock: Clock,
+        useCaseExecutionBuilder: UseCaseExecutionBuilder,
+    ) = PlaceAutoBidService(
+        findAuction, findAutoBid, saveAuction, useCaseExecutionBuilder.build(PlaceAutoBidService::class), clock
+    )
+
+    @Bean
+    fun disableAutoBidService(
+        findAuction: FindAuction,
+        findAutoBid: FindAutoBid,
+        saveAutoBid: SaveAutoBid,
+        useCaseExecutionBuilder: UseCaseExecutionBuilder,
+    ) = DisableAutoBidService(
+        findAutoBid, findAuction, saveAutoBid, useCaseExecutionBuilder.build(DisableAutoBidService::class)
     )
 }

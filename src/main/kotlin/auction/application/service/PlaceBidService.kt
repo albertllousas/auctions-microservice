@@ -8,6 +8,8 @@ import auction.domain.model.AuctionId
 import auction.domain.model.BidPlaced
 import auction.domain.model.FindAuction
 import auction.domain.model.FindUser
+import auction.domain.model.PlaceAutoBidError
+import auction.domain.model.PlaceBidError
 import auction.domain.model.PlaceBidUseCaseError
 import auction.domain.model.SaveAuction
 import auction.domain.model.User
@@ -19,10 +21,10 @@ import java.util.UUID
 typealias PlaceBid = (
     auction: Auction,
     amount: BigDecimal,
-    bidderId: User,
+    bidderId: UserId,
     prevBidNumber: Long,
     clock: Clock
-) -> Either<PlaceBidUseCaseError, BidPlaced>
+) -> Either<PlaceBidError, BidPlaced>
 
 class PlaceBidService(
     private val findAuction: FindAuction,
@@ -37,7 +39,7 @@ class PlaceBidService(
         findAuction(AuctionId(request.auctionId))
             .zip(findUser(UserId(request.bidderId)))
             .flatMap { (auction, bidder) ->
-                placeBid(auction, request.amount, bidder, request.currentBidCounter, clock)
+                placeBid(auction, request.amount, bidder.id, request.currentBidCounter, clock)
             }
             .tap { saveAuction(it.auction) }
     }

@@ -23,11 +23,11 @@ class AuctionsMongoRepositoryTest {
 
     private val mongo = Mongo()
 
-    private val auctions = mongo.getCollection<AuctionDBDto>("auctions")
+    private val mongoCollection = mongo.getCollection<AuctionDBDto>("auctions")
 
     private val sessionHolder = MongoSessionHolderForTest(mongo.client)
 
-    private val adapter = AuctionsMongoRepository(auctions, sessionHolder)
+    private val adapter = AuctionsMongoRepository(mongoCollection, sessionHolder)
 
     @AfterEach
     fun `tear down`() = mongo.container.stop()
@@ -42,7 +42,7 @@ class AuctionsMongoRepositoryTest {
 
         adapter.save(auction)
 
-        auctions.findOneById(auction.id.value.toString()) shouldBe AuctionDBDto(
+        mongoCollection.findOneById(auction.id.value.toString()) shouldBe AuctionDBDto(
             auction.id.value.toString(),
             auction.userId.value.toString(),
             auction.itemId.value.toString(),
@@ -76,7 +76,7 @@ class AuctionsMongoRepositoryTest {
 
         adapter.save(updatedAuction)
 
-        auctions.findOneById(auction.id.value.toString()) shouldBe AuctionDBDto(
+        mongoCollection.findOneById(auction.id.value.toString()) shouldBe AuctionDBDto(
             updatedAuction.id.value.toString(),
             updatedAuction.userId.value.toString(),
             updatedAuction.itemId.value.toString(),

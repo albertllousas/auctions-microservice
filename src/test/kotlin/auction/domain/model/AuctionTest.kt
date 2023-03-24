@@ -2,12 +2,16 @@ package auction.domain.model
 
 import arrow.core.left
 import arrow.core.right
-import auction.domain.model.AuctionStatus.*
+import auction.domain.model.AuctionStatus.Expired
+import auction.domain.model.AuctionStatus.ItemSold
+import auction.domain.model.AuctionStatus.OnPreview
+import auction.domain.model.AuctionStatus.Opened
 import auction.domain.model.ItemStatus.Other
 import auction.fixtures.Builders
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 import java.math.BigDecimal.TEN
 import java.math.BigDecimal.ZERO
 import java.time.Clock
@@ -15,8 +19,8 @@ import java.time.Duration.ofMinutes
 import java.time.Instant
 import java.time.LocalDateTime.now
 import java.time.LocalDateTime.parse
-import java.time.ZoneId.*
-import java.util.UUID.*
+import java.time.ZoneId.of
+import java.util.UUID.randomUUID
 
 class AuctionTest {
 
@@ -52,8 +56,9 @@ class AuctionTest {
                     currentBidNumber = 0,
                     currentBid = null,
                     endAt = openingDate.plusMinutes(1),
-                    sellToHighestBidPeriod = oneMinute
-                )
+                    sellToHighestBidPeriod = oneMinute,
+
+                    )
             ).right()
         }
 
@@ -78,7 +83,17 @@ class AuctionTest {
         @Test
         fun `should fail creating an auction when opening date is less than one week after creation`() {
             val result =
-                Auction.create(newId, user, item, openingBid, minimalBid, now(clock).plusDays(1), oneMinute, oneMinute, clock)
+                Auction.create(
+                    newId,
+                    user,
+                    item,
+                    openingBid,
+                    minimalBid,
+                    now(clock).plusDays(1),
+                    oneMinute,
+                    oneMinute,
+                    clock
+                )
 
             result shouldBe InvalidOpeningDate.left()
         }
@@ -86,7 +101,7 @@ class AuctionTest {
         @Test
         fun `should fail creating an auction when opening bid is invalid`() {
             val result =
-                Auction.create(newId, user, item, ZERO, minimalBid, openingDate, oneMinute, oneMinute, clock)
+                Auction.create(newId, user, item, BigDecimal("-1"), minimalBid, openingDate, oneMinute, oneMinute, clock)
 
             result shouldBe TooLowAmount.left()
         }
@@ -94,7 +109,7 @@ class AuctionTest {
         @Test
         fun `should fail creating an auction when minimal bid is invalid`() {
             val result =
-                Auction.create(newId, user, item, openingBid, TEN.negate(), openingDate, oneMinute, oneMinute, clock)
+                Auction.create(newId, user, item, openingBid, BigDecimal("-1"), openingDate, oneMinute, oneMinute, clock)
 
             result shouldBe TooLowAmount.left()
         }
@@ -167,7 +182,7 @@ class AuctionTest {
             val bidder = Builders.buildUser()
             val auction = Builders.buildAuction(status = Opened)
 
-            val result = Auction.placeBid(auction, TEN, User(bidder.id), 0, clock)
+            val result = Auction.placeBid(auction, TEN, bidder.id, 0, clock)
 
             val bid = Bid(bidder.id, Amount(TEN), now(clock))
             result shouldBe BidPlaced(
@@ -185,18 +200,23 @@ class AuctionTest {
             val bid = Bid(firstBidder.id, Amount(TEN), now(clock))
             val auction = Builders.buildAuction(currentBid = bid, status = Opened, currentBidBNumber = 2)
 
-            val result = Auction.placeBid(auction, TEN, User(newBidder.id), 2, clock)
+            val result = Auction.placeBid(auction, TEN, newBidder.id, 2, clock)
 
-            val newBid = Bid(newBidder.id, Amount(TEN), now(clock))
-            result shouldBe BidPlaced(auction.copy(currentBid = newBid, endAt = now(clock).plus(auction.sellToHighestBidPeriod))).right()
+            val newBid = Bid(newBidder.id, Amount(BigDecimal("20")), now(clock))
+            result shouldBe BidPlaced(
+                auction.copy(
+                    currentBid = newBid,
+                    endAt = now(clock).plus(auction.sellToHighestBidPeriod)
+                )
+            ).right()
         }
 
         @Test
-        fun `should fail placing a bid in an auction that has not started`() {
+        fun `should fail placing a bid in an auction that is not open for bidding`() {
             val bidder = Builders.buildUser()
             val auction = Builders.buildAuction(status = OnPreview)
 
-            val result = Auction.placeBid(auction, TEN, User(bidder.id), 0, clock)
+            val result = Auction.placeBid(auction, TEN, bidder.id, 0, clock)
 
             result shouldBe AuctionIsNotOpened.left()
         }
@@ -207,7 +227,7 @@ class AuctionTest {
             val bid = Bid(bidder.id, Amount(TEN), now(clock))
             val auction = Builders.buildAuction(currentBid = bid, status = Opened)
 
-            val result = Auction.placeBid(auction, TEN, User(bidder.id), 4, clock)
+            val result = Auction.placeBid(auction, TEN, bidder.id, 4, clock)
 
             result shouldBe HighestBidHasChanged.left()
         }
@@ -230,7 +250,7 @@ class AuctionTest {
 
             result shouldBe AuctionEnded(auction.copy(status = ItemSold(winner = bidderId))).right()
         }
-        
+
         @Test
         fun `should expire an auction when there are no bids`() {
             val clock = Clock.fixed(Instant.parse("2007-12-03T10:15:30.00Z"), of("UTC"))
@@ -267,4 +287,5 @@ class AuctionTest {
             result shouldBe AuctionIsNotOpened.left()
         }
     }
+
 }

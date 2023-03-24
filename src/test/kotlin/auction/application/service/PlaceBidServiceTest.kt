@@ -44,7 +44,7 @@ class PlaceBidServiceTest {
         every { findAuction(AuctionId(command.auctionId)) } returns auction.right()
         every { findUser(UserId(command.bidderId)) } returns bidder.right()
         every {
-            placeBid(auction, command.amount, bidder, command.currentBidCounter, clock)
+            placeBid(auction, command.amount, bidder.id, command.currentBidCounter, clock)
         } returns BidPlaced(auction).right()
 
         val result = placeBidService.invoke(command)

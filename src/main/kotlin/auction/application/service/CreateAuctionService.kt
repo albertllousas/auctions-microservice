@@ -43,25 +43,24 @@ class CreateAuctionService(
     private val create: CreateAuction = Auction.Companion::create,
 ) {
 
-    operator fun invoke(request: CreateAuctionCommand): Either<CreateAuctionUseCaseError, Unit> =
-        executeUseCase {
-            findUser(UserId(request.sellerId))
-                .zip(findItem(ItemId(request.itemId)))
-                .flatMap { (user, item) ->
-                    create(
-                        newId(),
-                        user,
-                        item,
-                        request.openingBid,
-                        request.minimalBid,
-                        request.openingDate,
-                        auctionExpirationPeriod,
-                        sellToHighestBidPeriod,
-                        clock
-                    )
-                }
-                .tap { saveAuction(it.auction) }
-        }
+    operator fun invoke(request: CreateAuctionCommand): Either<CreateAuctionUseCaseError, Unit> = executeUseCase {
+        findUser(UserId(request.sellerId))
+            .zip(findItem(ItemId(request.itemId)))
+            .flatMap { (user, item) ->
+                create(
+                    newId(),
+                    user,
+                    item,
+                    request.openingBid,
+                    request.minimalBid,
+                    request.openingDate,
+                    auctionExpirationPeriod,
+                    sellToHighestBidPeriod,
+                    clock
+                )
+            }
+            .tap { saveAuction(it.auction) }
+    }
 }
 
 data class CreateAuctionCommand(

@@ -1,6 +1,6 @@
 package auction.infrastructure.out.db
 
-import auction.infrastructure.out.db.OutboxMongoRepository.BucketingTime.*
+import auction.infrastructure.out.db.OutboxMongoRepository.BucketingTime.MILLIS_100
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.UpdateOptions
 import com.mongodb.client.model.Updates.combine
@@ -8,9 +8,8 @@ import com.mongodb.client.model.Updates.push
 import com.mongodb.client.model.Updates.setOnInsert
 import org.bson.codecs.pojo.annotations.BsonId
 import org.litote.kmongo.ascendingSort
-import org.litote.kmongo.descendingSort
-import org.litote.kmongo.updateOne
 import org.litote.kmongo.eq
+import org.litote.kmongo.updateOne
 import java.time.Clock
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
@@ -61,8 +60,15 @@ data class BucketOfMessages(
     val bucket: List<OutboxMessage>
 )
 
-data class OutboxMessage(val id: UUID, val aggregateId: UUID, val stream: String, val payload: ByteArray) {
+enum class MessagingSystem { KAFKA }
 
+data class OutboxMessage(
+    val id: UUID,
+    val aggregateId: UUID,
+    val messagingSystem: MessagingSystem,
+    val target: String,
+    val payload: ByteArray
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -71,7 +77,8 @@ data class OutboxMessage(val id: UUID, val aggregateId: UUID, val stream: String
 
         if (id != other.id) return false
         if (aggregateId != other.aggregateId) return false
-        if (stream != other.stream) return false
+        if (messagingSystem != other.messagingSystem) return false
+        if (target != other.target) return false
         if (!payload.contentEquals(other.payload)) return false
 
         return true
@@ -80,8 +87,10 @@ data class OutboxMessage(val id: UUID, val aggregateId: UUID, val stream: String
     override fun hashCode(): Int {
         var result = id.hashCode()
         result = 31 * result + aggregateId.hashCode()
-        result = 31 * result + stream.hashCode()
+        result = 31 * result + messagingSystem.hashCode()
+        result = 31 * result + target.hashCode()
         result = 31 * result + payload.contentHashCode()
         return result
     }
+
 }

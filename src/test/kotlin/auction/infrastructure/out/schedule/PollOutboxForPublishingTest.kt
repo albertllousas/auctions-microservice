@@ -3,7 +3,7 @@ package auction.infrastructure.out.schedule
 import auction.fixtures.Builders
 import auction.fixtures.FakeWithinTransaction
 import auction.infrastructure.out.db.OutboxMongoRepository
-import auction.infrastructure.out.stream.PublishOutboxMessageToKafka
+import auction.infrastructure.out.messaging.PublishOutboxMessageToKafka
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import io.mockk.every
 import io.mockk.mockk

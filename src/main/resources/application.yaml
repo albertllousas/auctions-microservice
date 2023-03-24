@@ -35,6 +35,13 @@ spring:
   mvc:
     favicon:
       enabled: false
+  kafka:
+    consumer:
+      enable-auto-commit: true
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      auto-offset-reset: earliest
+    bootstrap-servers: localhost:9092
 
 kafka:
   producer:

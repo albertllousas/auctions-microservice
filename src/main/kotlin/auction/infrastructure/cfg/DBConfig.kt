@@ -1,10 +1,15 @@
 package auction.infrastructure.cfg
 
 import auction.domain.model.FindAuction
+import auction.domain.model.FindAutoBid
+import auction.domain.model.FindAutoBidsByAuction
 import auction.domain.model.SaveAuction
+import auction.domain.model.SaveAutoBid
 import auction.infrastructure.out.db.AuctionDBDto
 import auction.infrastructure.out.db.AuctionTasksMongoRepository
 import auction.infrastructure.out.db.AuctionsMongoRepository
+import auction.infrastructure.out.db.AutoBidDBDto
+import auction.infrastructure.out.db.AutoBidsMongoRepository
 import auction.infrastructure.out.db.BucketOfEndTasks
 import auction.infrastructure.out.db.BucketOfMessages
 import auction.infrastructure.out.db.BucketOfOpenTasks
@@ -46,6 +51,10 @@ class DBConfig {
         mongoDatabase.getColl<AuctionDBDto>("auctions")
 
     @Bean
+    fun autoBidsCollection(mongoDatabase: MongoDatabase) =
+        mongoDatabase.getColl<AutoBidDBDto>("autobids")
+
+    @Bean
     fun openTasksCollection(mongoDatabase: MongoDatabase): MongoCollection<BucketOfOpenTasks> =
         mongoDatabase.getColl("tasks.auction.open")
 
@@ -68,6 +77,22 @@ class DBConfig {
 
     @Bean
     fun findAuction(auctionsMongoRepository: AuctionsMongoRepository): FindAuction = auctionsMongoRepository.find
+
+    @Bean
+    fun autoBidsMongoRepository(
+        autoBidsCollection: MongoCollection<AutoBidDBDto>,
+        sessionHolder: MongoSessionHolder,
+    ) = AutoBidsMongoRepository(autoBidsCollection, sessionHolder)
+
+    @Bean
+    fun saveAutoBid(autoBidsMongoRepository: AutoBidsMongoRepository): SaveAutoBid = autoBidsMongoRepository.save
+
+    @Bean
+    fun findAutoBid(autoBidsMongoRepository: AutoBidsMongoRepository): FindAutoBid = autoBidsMongoRepository.find
+
+    @Bean
+    fun findAutoBidsByAuction(autoBidsMongoRepository: AutoBidsMongoRepository): FindAutoBidsByAuction =
+        autoBidsMongoRepository.findAutoBidsByAuction
 
     @Bean
     fun sessionHolder(mongoClient: MongoClient) = ThreadLocalMongoSessionHolder(mongoClient)

@@ -4,6 +4,10 @@ import arrow.core.left
 import arrow.core.right
 import auction.application.service.CreateAuctionCommand
 import auction.application.service.CreateAuctionService
+import auction.application.service.CreateAutoBidCommand
+import auction.application.service.CreateAutoBidService
+import auction.domain.model.AuctionNotFound
+import auction.domain.model.AutoBidNotFound
 import auction.domain.model.InvalidOpeningDate
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -18,55 +22,52 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Tag("integration")
-@WebFluxTest(CreateAuctionHttpResource::class)
-class CreateAuctionHttpResourceTest(@Autowired val webTestClient: WebTestClient) {
+@WebFluxTest(CreateAutoBidHttpResource::class)
+class CreateAutoBidHttpResourceTest(@Autowired val webTestClient: WebTestClient) {
 
     @MockkBean
-    private lateinit var createAuction: CreateAuctionService
+    private lateinit var createAutoBid: CreateAutoBidService
 
-    private val sellerId = UUID.randomUUID()
-    private val openingBid = 100.toBigDecimal()
-    private val itemId = UUID.randomUUID()
-    private val minimalBid = 10.toBigDecimal()
-    private val openingDate = LocalDateTime.now().plusDays(1)
-    private val command = CreateAuctionCommand(sellerId, itemId, openingBid, minimalBid, openingDate)
+    private val auctionId = UUID.randomUUID()
+    private val bid = 10.toBigDecimal()
+    private val userId = UUID.randomUUID()
+    private val limit = 100.toBigDecimal()
+    private val command = CreateAutoBidCommand(auctionId, userId, bid, limit)
 
     @Test
     fun `should create an auction`() {
-        every { createAuction(command) } returns Unit.right()
+        every { createAutoBid(command) } returns Unit.right()
 
         val response = webTestClient
             .post()
-            .uri("/auctions")
+            .uri("/auto-bids")
             .contentType(APPLICATION_JSON)
             .body(BodyInserters.fromValue(
                 """{
-                 "seller_id": "$sellerId",
-                 "item_id": "$itemId",
-                 "opening_bid": $openingBid,
-                 "minimal_bid": $minimalBid,
-                 "opening_date": "$openingDate"                 
+                 "auction_id": "$auctionId",
+                 "user_id": "$userId",
+                 "bid": $bid,
+                 "limit": $limit
                 }"""))
             .exchange()
 
-        response.expectStatus().isAccepted
+        response.expectStatus().isCreated
     }
 
     @Test
-    fun `should fail if create auction usecase fails`() {
-        every { createAuction(any()) } returns InvalidOpeningDate.left()
+    fun `should fail if create auto bid usecase fails`() {
+        every { createAutoBid(any()) } returns AuctionNotFound.left()
 
         val response = webTestClient
             .post()
-            .uri("/auctions")
+            .uri("/auto-bids")
             .contentType(APPLICATION_JSON)
             .body(BodyInserters.fromValue(
                 """{
-                 "seller_id": "$sellerId",
-                 "item_id": "$itemId",
-                 "opening_bid": $openingBid,
-                 "minimal_bid": $minimalBid,
-                 "opening_date": "$openingDate"                 
+                 "auction_id": "$auctionId",
+                 "user_id": "$userId",
+                 "bid": $bid,
+                 "limit": $limit
                 }"""))
             .exchange()
 

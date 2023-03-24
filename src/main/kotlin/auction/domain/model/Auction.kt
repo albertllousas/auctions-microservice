@@ -5,8 +5,8 @@ import arrow.core.flatMap
 import arrow.core.left
 import arrow.core.right
 import arrow.core.zip
-import auction.domain.model.AuctionStatus.ItemSold
 import auction.domain.model.AuctionStatus.Expired
+import auction.domain.model.AuctionStatus.ItemSold
 import auction.domain.model.AuctionStatus.OnPreview
 import auction.domain.model.AuctionStatus.Opened
 import java.math.BigDecimal
@@ -14,7 +14,9 @@ import java.time.Clock
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
+import java.util.IllegalFormatException
 import java.util.UUID
+import kotlin.jvm.Throws
 
 data class AuctionId(val value: UUID)
 
@@ -47,7 +49,7 @@ data class Auction private constructor(
     val bidsCounter: Long,
     val currentBid: Bid?,
     val endAt: LocalDateTime,
-    val sellToHighestBidPeriod: Duration,
+    val sellToHighestBidPeriod: Duration
 ) {
 
     companion object {
@@ -99,7 +101,7 @@ data class Auction private constructor(
         fun placeBid(
             auction: Auction,
             amount: BigDecimal,
-            bidder: User,
+            bidderId: UserId,
             currentBidCounter: Long,
             clock: Clock
         ): Either<PlaceBidError, BidPlaced> =
@@ -107,7 +109,8 @@ data class Auction private constructor(
                 auction.bidsCounter != currentBidCounter -> HighestBidHasChanged.left()
                 auction.status != Opened -> AuctionIsNotOpened.left()
                 else -> Amount.create(amount, auction.minimalAmount.value)
-            }.map { amount ->  Bid(bidder.id, amount, now(clock)) }
+            }.map { if (auction.currentBid != null) auction.currentBid.amount.plus(it) else it }
+                .map { Bid(bidderId, it, now(clock)) }
                 .map { bid -> auction.copy(currentBid = bid, endAt = bid.ts.plus(auction.sellToHighestBidPeriod)) }
                 .map(::BidPlaced)
 
@@ -136,7 +139,19 @@ data class Auction private constructor(
             endAt: LocalDateTime,
             sellToHighestBidPeriod: Duration
         ) = Auction(
-            id, userId, itemId, openingAmount, minimalAmount, openingAt, createdAt, status, version, currentBidNumber, currentBid, endAt, sellToHighestBidPeriod
+            id,
+            userId,
+            itemId,
+            openingAmount,
+            minimalAmount,
+            openingAt,
+            createdAt,
+            status,
+            version,
+            currentBidNumber,
+            currentBid,
+            endAt,
+            sellToHighestBidPeriod
         )
 
         private fun check(
