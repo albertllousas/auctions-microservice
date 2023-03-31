@@ -12,8 +12,6 @@ sealed interface PlaceBidUseCaseError : DomainError
 
 sealed interface EndAuctionUseCaseError : DomainError
 
-sealed interface SubscribeUseCaseError : DomainError
-
 sealed interface CreateAutoBidUseCaseError : DomainError
 
 sealed interface PlaceAutoBidUseCaseError : DomainError
@@ -50,7 +48,8 @@ object TooLowAmount : CreateAmountError, PlaceBidError, CreateAutoBidError
 
 object InvalidOpeningDate : CreateAuctionError
 
-object AuctionNotFound : OpenAuctionUseCaseError, PlaceBidUseCaseError, EndAuctionUseCaseError, CreateAutoBidUseCaseError, PlaceAutoBidUseCaseError, DisableAutoBidUseCaseError
+object AuctionNotFound : OpenAuctionUseCaseError, PlaceBidUseCaseError, EndAuctionUseCaseError,
+    CreateAutoBidUseCaseError, PlaceAutoBidUseCaseError, DisableAutoBidUseCaseError
 
 object AuctionAlreadyOpened : OpenAuctionError
 
@@ -72,7 +71,7 @@ object NoBidToAutoBid : PlaceAutoBidError
 
 object AutoBidLimitReached : PlaceAutoBidError, CreateAutoBidError
 
-object AuctionNotMatching : PlaceAutoBidError
+object AuctionNotMatching : PlaceAutoBidError, DisableAutoBidUseCaseError
 
 object AutoBidIsDisabled : PlaceAutoBidError
 

@@ -5,11 +5,11 @@ import auction.domain.model.PublishEvent
 import auction.infrastructure.out.db.AuctionTasksMongoRepository
 import auction.infrastructure.out.db.IsAnActiveTransaction
 import auction.infrastructure.out.db.OutboxMongoRepository
-import auction.infrastructure.out.events.NotifyInMemoryEventHandlers
-import auction.infrastructure.out.events.PublishMetrics
 import auction.infrastructure.out.events.MonitorErrors
-import auction.infrastructure.out.events.ScheduleAuctionTask
+import auction.infrastructure.out.events.NotifyInMemoryEventHandlers
 import auction.infrastructure.out.events.PublishAuctionChanges
+import auction.infrastructure.out.events.PublishMetrics
+import auction.infrastructure.out.events.ScheduleAuctionTask
 import auction.infrastructure.out.events.WriteLogs
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.micrometer.core.instrument.MeterRegistry

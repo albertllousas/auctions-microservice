@@ -43,5 +43,8 @@ class TriggerAuctionTasksScheduler(
             }
     }
 
-    private fun <T> runIgnoringExceptions(block: () -> T) = try { block() } catch (_: Exception) { }
+    private fun <T> runIgnoringExceptions(block: () -> T) = try {
+        block()
+    } catch (_: Exception) {
+    }
 }

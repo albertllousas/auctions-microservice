@@ -6,13 +6,19 @@ import auction.domain.model.Amount
 import auction.domain.model.Auction
 import auction.domain.model.AuctionId
 import auction.domain.model.AuctionNotFound
-import auction.domain.model.AuctionStatus.*
+import auction.domain.model.AuctionStatus.Expired
+import auction.domain.model.AuctionStatus.ItemSold
+import auction.domain.model.AuctionStatus.OnPreview
+import auction.domain.model.AuctionStatus.Opened
 import auction.domain.model.Bid
 import auction.domain.model.FindAuction
 import auction.domain.model.ItemId
 import auction.domain.model.SaveAuction
 import auction.domain.model.UserId
-import auction.infrastructure.out.db.AuctionDBStatus.*
+import auction.infrastructure.out.db.AuctionDBStatus.ENDED
+import auction.infrastructure.out.db.AuctionDBStatus.EXPIRED
+import auction.infrastructure.out.db.AuctionDBStatus.ON_PREVIEW
+import auction.infrastructure.out.db.AuctionDBStatus.OPENED
 import com.mongodb.BasicDBObject
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.FindOneAndReplaceOptions
@@ -95,7 +101,7 @@ data class AuctionDBDto(
             sellToHighestBidPeriodInMs = auction.sellToHighestBidPeriod.toMillis()
         )
 
-        fun to(dto:AuctionDBDto) = Auction.reconstitute(
+        fun to(dto: AuctionDBDto) = Auction.reconstitute(
             id = AuctionId(UUID.fromString(dto.id)),
             userId = UserId(UUID.fromString(dto.userId)),
             itemId = ItemId(UUID.fromString(dto.itemId)),

@@ -8,11 +8,9 @@ import auction.domain.model.AuctionId
 import auction.domain.model.BidPlaced
 import auction.domain.model.FindAuction
 import auction.domain.model.FindUser
-import auction.domain.model.PlaceAutoBidError
 import auction.domain.model.PlaceBidError
 import auction.domain.model.PlaceBidUseCaseError
 import auction.domain.model.SaveAuction
-import auction.domain.model.User
 import auction.domain.model.UserId
 import java.math.BigDecimal
 import java.time.Clock
@@ -35,7 +33,7 @@ class PlaceBidService(
     private val placeBid: PlaceBid = Auction.Companion::placeBid
 ) {
 
-    operator fun invoke(request: PlaceBidCommand) : Either<PlaceBidUseCaseError, Unit> = executeUseCase {
+    operator fun invoke(request: PlaceBidCommand): Either<PlaceBidUseCaseError, Unit> = executeUseCase {
         findAuction(AuctionId(request.auctionId))
             .zip(findUser(UserId(request.bidderId)))
             .flatMap { (auction, bidder) ->

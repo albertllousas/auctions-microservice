@@ -27,7 +27,7 @@ data class UsersHttpClient(
 
     private val getUsersUrl = "$baseUrl/users"
 
-    val findUser : FindUser = { userId ->
+    val findUser: FindUser = { userId ->
         Request.Builder().url("$getUsersUrl/${userId.value}").build()
             .let(okHttpClient::newCall)
             .let(Call::execute)

@@ -1,7 +1,6 @@
 package auction.infrastructure.cfg
 
 import auction.infrastructure.out.messaging.PublishOutboxMessageToKafka
-import com.fasterxml.jackson.core.JsonProcessingException
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerConfig.*
 import org.apache.kafka.common.serialization.ByteArraySerializer
@@ -20,7 +19,6 @@ import org.springframework.kafka.listener.ContainerProperties
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer
 import org.springframework.kafka.listener.DefaultErrorHandler
 import org.springframework.kafka.support.ExponentialBackOffWithMaxRetries
-import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 
 @Configuration

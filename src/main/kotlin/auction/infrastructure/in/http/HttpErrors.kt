@@ -1,14 +1,14 @@
 package auction.infrastructure.`in`.http
 
 import auction.domain.model.AuctionHasFinished
-import auction.domain.model.AuctionNotFound
 import auction.domain.model.AuctionIsNotOpened
+import auction.domain.model.AuctionNotFound
 import auction.domain.model.AutoBidAlreadyExists
 import auction.domain.model.AutoBidLimitReached
 import auction.domain.model.CreateAuctionUseCaseError
 import auction.domain.model.CreateAutoBidUseCaseError
-import auction.domain.model.InvalidOpeningDate
 import auction.domain.model.HighestBidHasChanged
+import auction.domain.model.InvalidOpeningDate
 import auction.domain.model.ItemDoesNotBelongToTheSeller
 import auction.domain.model.ItemNotAvailable
 import auction.domain.model.ItemNotFound

@@ -1,8 +1,7 @@
 package auction.infrastructure.out.schedule
 
 import auction.domain.model.WithinTransaction
-import auction.infrastructure.out.db.MessagingSystem
-import auction.infrastructure.out.db.MessagingSystem.*
+import auction.infrastructure.out.db.MessagingSystem.KAFKA
 import auction.infrastructure.out.db.OutboxMessage
 import auction.infrastructure.out.db.OutboxMongoRepository
 import auction.infrastructure.out.messaging.PublishOutboxMessageToKafka
@@ -11,7 +10,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.TaskScheduler
 import java.lang.invoke.MethodHandles
-import java.util.concurrent.TimeUnit.*
 
 private const val FAIL_COUNTER = "outbox.publishing.fail"
 

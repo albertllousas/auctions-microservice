@@ -215,4 +215,40 @@ class AutoBidTest {
             }
         }
     }
+
+    @Nested
+    inner class DisablingAnAutoBid {
+
+        @Test
+        fun `should disable an auto-bid`() {
+            val auction = Builders.buildAuction()
+            val autoBid = Builders.buildAutoBid(auctionId = auction.id)
+
+            val result = AutoBid.disable(autoBid, auction)
+
+            assertThat(result).isEqualTo(
+                AutoBidDisabled(auction = auction, autoBid = autoBid.copy(enabled = false)).right()
+            )
+        }
+
+        @Test
+        fun `should fail disabling an auto-bid when auction is not matching`() {
+            val auction = Builders.buildAuction()
+            val autoBid = Builders.buildAutoBid()
+
+            val result = AutoBid.disable(autoBid, auction)
+
+            assertThat(result).isEqualTo(AuctionNotMatching.left())
+        }
+
+        @Test
+        fun `should fail disabling an auto-bid when it is already disabled`() {
+            val auction = Builders.buildAuction()
+            val autoBid = Builders.buildAutoBid(auctionId = auction.id, enabled = false)
+
+            val result = AutoBid.disable(autoBid, auction)
+
+            assertThat(result).isEqualTo(AutoBidAlreadyDisabled.left())
+        }
+    }
 }

@@ -1,7 +1,6 @@
 package auction.infrastructure.out.db
 
 import auction.domain.model.WithinTransaction
-import com.mongodb.TransactionOptions
 import com.mongodb.client.ClientSession
 import com.mongodb.client.MongoClient
 
@@ -27,7 +26,7 @@ class WithinMongoTransaction(private val session: MongoSessionHolder) : WithinTr
         session.get().let { client ->
             if (!client.hasActiveTransaction())
                 client.use { client.withTransaction { transactionalBlock() }.also { session.clear() } }
-             else transactionalBlock()
+            else transactionalBlock()
         }
     } catch (e: Exception) {
         session.clear()

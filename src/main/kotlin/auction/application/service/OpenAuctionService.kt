@@ -6,8 +6,8 @@ import auction.domain.model.Auction
 import auction.domain.model.AuctionId
 import auction.domain.model.AuctionOpened
 import auction.domain.model.FindAuction
-import auction.domain.model.SaveAuction
 import auction.domain.model.OpenAuctionUseCaseError
+import auction.domain.model.SaveAuction
 import java.time.Clock
 import java.util.UUID
 

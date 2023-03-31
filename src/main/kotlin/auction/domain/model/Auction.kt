@@ -14,9 +14,7 @@ import java.time.Clock
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
-import java.util.IllegalFormatException
 import java.util.UUID
-import kotlin.jvm.Throws
 
 data class AuctionId(val value: UUID)
 

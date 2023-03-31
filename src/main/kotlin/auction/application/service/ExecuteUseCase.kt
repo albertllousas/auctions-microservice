@@ -9,8 +9,8 @@ import auction.domain.model.ReportError
 import auction.domain.model.WithinTransaction
 import kotlin.reflect.KClass
 
-interface ExecuteUseCase  {
-    operator fun <E: DomainError> invoke(block: () -> Either<E, DomainEvent>) : Either<E, Unit>
+interface ExecuteUseCase {
+    operator fun <E : DomainError> invoke(block: () -> Either<E, DomainEvent>): Either<E, Unit>
 }
 
 class UseCaseExecutionBuilder(
@@ -21,7 +21,7 @@ class UseCaseExecutionBuilder(
 ) {
     fun build(originator: KClass<*>): ExecuteUseCase = object : ExecuteUseCase {
 
-        override fun <E: DomainError> invoke(block: () -> Either<E, DomainEvent>): Either<E, Unit> = try {
+        override fun <E : DomainError> invoke(block: () -> Either<E, DomainEvent>): Either<E, Unit> = try {
             withinTransaction {
                 block()
                     .map { publishEvent(it) }

@@ -8,7 +8,7 @@ import auction.domain.model.AuctionId
 import auction.domain.model.FindAutoBidsByAuction
 import auction.infrastructure.cfg.GeneralConfig
 import auction.infrastructure.out.events.AuctionIntegrationEvent
-import auction.infrastructure.out.events.AuctionIntegrationEvent.*
+import auction.infrastructure.out.events.AuctionIntegrationEvent.BidPlacedEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.kafka.annotation.KafkaListener
@@ -26,12 +26,13 @@ class ConsumeBidPlacedEvents(
 
     @KafkaListener(topics = ["public.auctions"], groupId = "auction-service")
     fun onMessage(message: Message<ByteArray>) {
-        when(val event = mapper.readValue<AuctionIntegrationEvent>(message.payload)) {
+        when (val event = mapper.readValue<AuctionIntegrationEvent>(message.payload)) {
             is BidPlacedEvent ->
                 findAutoBidsByAuction(AuctionId(event.auction.id))
                     .map { Pair(it, placeAutoBid(PlaceAutoBidCommand(it.id.value))) }
                     .filter { it.second.isLeft() }
                     .forEach { disableAutoBid(DisableAutoBidCommand(it.first.id.value)) }
+
             else -> noop()
         }
     }

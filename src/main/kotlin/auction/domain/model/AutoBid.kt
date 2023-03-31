@@ -48,9 +48,14 @@ data class AutoBid(
                 !autoBid.enabled -> AutoBidIsDisabled.left()
                 else -> autoBid.right()
             }
-                .flatMap {  Auction.placeBid(auction, it.amount.value, it.userId, auction.bidsCounter, clock) }
+                .flatMap { Auction.placeBid(auction, it.amount.value, it.userId, auction.bidsCounter, clock) }
                 .map { AutoBidPlaced(it.auction, autoBid) }
 
-        fun disable(autoBid: AutoBid, auction: Auction): Either<DisableAutoBidUseCaseError, AutoBidDisabled> = TODO()
+        fun disable(autoBid: AutoBid, auction: Auction): Either<DisableAutoBidUseCaseError, AutoBidDisabled> =
+            when {
+                !autoBid.enabled -> AutoBidAlreadyDisabled.left()
+                autoBid.auctionId != auction.id -> AuctionNotMatching.left()
+                else -> autoBid.copy(enabled = false).right()
+            }.map { AutoBidDisabled(auction, it) }
     }
 }

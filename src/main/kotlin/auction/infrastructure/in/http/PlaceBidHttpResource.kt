@@ -19,7 +19,10 @@ private val created: ResponseEntity<Unit> = ResponseEntity(HttpStatus.CREATED)
 class PlaceBidHttpResource(private val placeBid: PlaceBidService) {
 
     @PostMapping("/auctions/{auctionId}/bids")
-    fun post(@PathVariable("auctionId") auctionId: UUID, @RequestBody request: PlaceBidHttpRequest): ResponseEntity<Unit> =
+    fun post(
+        @PathVariable("auctionId") auctionId: UUID,
+        @RequestBody request: PlaceBidHttpRequest
+    ): ResponseEntity<Unit> =
         placeBid(request.asCommand(auctionId)).fold(ifLeft = { it.asHttpError() }, ifRight = { created })
 
     private fun PlaceBidHttpRequest.asCommand(auctionId: UUID) =

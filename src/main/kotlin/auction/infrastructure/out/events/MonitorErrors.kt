@@ -17,19 +17,25 @@ class MonitorErrors(
     private val logger: Logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass()),
 ) {
 
-    val reportError : ReportError = { error, originator ->
+    val reportError: ReportError = { error, originator ->
         logger.warn("domain-error: '${error::class.simpleName}', originator: '${originator.simpleName}'")
         metrics.counter(
             errorCounter,
-            listOf(Tag.of("type", error::class.simpleName.toString()), Tag.of("originator", originator.simpleName.toString()))
+            listOf(
+                Tag.of("type", error::class.simpleName.toString()),
+                Tag.of("originator", originator.simpleName.toString())
+            )
         ).increment()
     }
 
-    val reportCrash : ReportCrash = { crash, originator ->
+    val reportCrash: ReportCrash = { crash, originator ->
         logger.error("originator: '${originator.simpleName}'", crash)
         metrics.counter(
             crashCounter,
-            listOf(Tag.of("type", crash::class.simpleName.toString()), Tag.of("originator", originator.simpleName.toString()))
+            listOf(
+                Tag.of("type", crash::class.simpleName.toString()),
+                Tag.of("originator", originator.simpleName.toString())
+            )
         ).increment()
     }
 }

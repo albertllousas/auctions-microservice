@@ -158,7 +158,7 @@ Usually these definitions are imported from the scheme registry.
     JsonSubTypes.Type(value = AuctionEndedEvent::class, name = "auction_ended_event"),
     JsonSubTypes.Type(value = AutoBidPlacedEvent::class, name = "auto_bid_placed_event"),
     JsonSubTypes.Type(value = AutoBidDisabledEvent::class, name = "auto_bid_disabled_event"),
-    )
+)
 sealed class AuctionIntegrationEvent(
     @get:JsonProperty("event_type") val eventType: String
 ) {

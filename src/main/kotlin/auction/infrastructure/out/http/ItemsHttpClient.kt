@@ -23,7 +23,7 @@ data class ItemsHttpClient(
     private val okHttpClient: OkHttpClient,
     private val baseUrl: String,
     private val mapper: ObjectMapper
-    ) {
+) {
 
     private val getItemUrl = "$baseUrl/catalog/items"
 
@@ -61,9 +61,9 @@ data class ItemsHttpClient(
 
 data class ItemHttpDto(
     @JsonProperty("item_id") val itemId: UUID,
-    val status : ItemHttpStatus,
+    val status: ItemHttpStatus,
     @JsonProperty("user_id") val userId: UUID
-    )
+)
 
 enum class ItemHttpStatus {
     SOLD, ON_AUCTION, ON_PREVIEW, AVAILABLE, DISABLED

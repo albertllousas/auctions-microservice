@@ -15,7 +15,6 @@ import org.bson.codecs.pojo.annotations.BsonId
 import org.litote.kmongo.and
 import org.litote.kmongo.ascendingSort
 import org.litote.kmongo.eq
-import org.litote.kmongo.gte
 import org.litote.kmongo.lte
 import org.litote.kmongo.updateOne
 import java.time.Clock
