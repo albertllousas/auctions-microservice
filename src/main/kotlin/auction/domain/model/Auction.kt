@@ -16,24 +16,6 @@ import java.time.LocalDateTime
 import java.time.LocalDateTime.now
 import java.util.UUID
 
-data class AuctionId(val value: UUID)
-
-data class AggregateVersion(val value: Long) {
-
-    companion object {
-        fun new() = AggregateVersion(0)
-    }
-
-    fun inc() = AggregateVersion(this.value.inc())
-}
-
-sealed class AuctionStatus {
-    object OnPreview : AuctionStatus()
-    object Opened : AuctionStatus()
-    object Expired : AuctionStatus()
-    data class ItemSold(val winner: UserId) : AuctionStatus()
-}
-
 data class Auction private constructor(
     val id: AuctionId,
     val userId: UserId,
@@ -169,3 +151,21 @@ data class Auction private constructor(
 }
 
 data class Bid(val bidderId: UserId, val amount: Amount, val ts: LocalDateTime)
+
+data class AuctionId(val value: UUID)
+
+data class AggregateVersion(val value: Long) {
+
+    companion object {
+        fun new() = AggregateVersion(0)
+    }
+
+    fun inc() = AggregateVersion(this.value.inc())
+}
+
+sealed class AuctionStatus {
+    object OnPreview : AuctionStatus()
+    object Opened : AuctionStatus()
+    object Expired : AuctionStatus()
+    data class ItemSold(val winner: UserId) : AuctionStatus()
+}

@@ -11,9 +11,6 @@ import java.math.BigDecimal
 import java.time.Clock
 import java.util.UUID
 
-
-data class AutoBidId(val value: UUID)
-
 data class AutoBid(
     val id: AutoBidId,
     val auctionId: AuctionId,
@@ -59,3 +56,5 @@ data class AutoBid(
             }.map { AutoBidDisabled(auction, it) }
     }
 }
+
+data class AutoBidId(val value: UUID)
