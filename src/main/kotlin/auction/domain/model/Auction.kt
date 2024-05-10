@@ -119,19 +119,7 @@ data class Auction private constructor(
             endAt: LocalDateTime,
             sellToHighestBidPeriod: Duration
         ) = Auction(
-            id,
-            userId,
-            itemId,
-            openingAmount,
-            minimalAmount,
-            openingAt,
-            createdAt,
-            status,
-            version,
-            currentBidNumber,
-            currentBid,
-            endAt,
-            sellToHighestBidPeriod
+            id, userId, itemId, openingAmount, minimalAmount, openingAt, createdAt, status, version, currentBidNumber, currentBid, endAt, sellToHighestBidPeriod
         )
 
         private fun check(
